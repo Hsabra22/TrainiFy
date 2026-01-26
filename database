@@ -1,0 +1,127 @@
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+TABLES:
+1)profiles (basic data name email role users_id id image username etc etc)
+2)users (with:user_id(as "foreign key" which represent the specific user ),goal,experience_level,height,weight,age,gender,availability_days(training by week) and finally trainer_id(it is nullable (it can be null before that user add a trainer))) {"these data will be added while signing up by user and will be sended to the ai while clicking on generate button"};
+3)program (user_id , id , workout, meals, daily calories , etc etc ((maybe an array so each day specific meal workout etc etc))) (and we will edit data using trainer)
+4)notes (from_user_id , to_user_id, message )
+5)trainers (trainer_user_id , user_user__id(the user that have him as trainer) (and we will add more properties after))
+6)request (user_id , trainer_id) (we will fix this also)
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+profiles
+--------
+id (pk)
+auth_user_id (uuid, unique)   -- from supabase auth.users
+name
+username
+email
+image_url
+role        -- 'user' | 'trainer' | 'admin'
+created_at
+
+users
+-----
+id (pk)
+profile_id (fk -> profiles.auth_user_id, unique)
+goal                    -- lose_fat | build_muscle | stay_fit
+experience_level        -- beginner | intermediate | advanced
+height
+weight
+age
+gender                  -- nullable
+availability_days       -- int (1-7)
+trainer_id (fk -> trainers.auth_user_id, nullable)
+created_at
+
+
+trainers
+--------
+id (pk)
+profile_id (fk -> profiles.auth_user_id, unique)
+bio
+specialization          -- strength | fat_loss | rehab | etc
+experience_years
+is_approved             -- boolean
+created_at
+
+trainer_requests
+----------------
+id (pk)
+user_id (fk -> users.id)
+trainer_id (fk -> trainers.id)
+status                  -- pending | accepted | rejected //after that is accepted , we add the trainer_id to the users table with the specific user_id
+created_at
+
+programs
+--------
+id (pk)
+user_id (fk -> users.auth_user_id, unique)
+created_by              -- 'ai'
+plan_data (jsonb)       -- workouts, meals, schedule, calories
+last_updated_by         -- 'ai' | 'trainer'
+created_at
+updated_at
+
+notes
+-----
+id (pk)
+from_profile_id (fk -> profiles.auth_user_id)
+to_profile_id (fk -> profiles.auth_user_id)
+message
+created_at
+
+
+
+
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.profiles (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_id uuid NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+  fullName text,
+  username text,
+  email text,
+  phone text,
+  image_url text,
+  role text,
+  CONSTRAINT profiles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.programs (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  user_id uuid,
+  created_by text,
+  plan_data jsonb,
+  last_updated_by text,
+  updated_at timestamp with time zone DEFAULT now(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT programs_pkey PRIMARY KEY (id),
+  CONSTRAINT programs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(user_id)
+);
+CREATE TABLE public.trainers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  profile_id uuid NOT NULL UNIQUE,
+  bio text,
+  is_approved boolean,
+  specialization text,
+  experience_years text,
+  CONSTRAINT trainers_pkey PRIMARY KEY (id),
+  CONSTRAINT trainers_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(user_id)
+);
+CREATE TABLE public.userDetails (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  profile_id uuid NOT NULL UNIQUE,
+  goal text,
+  experience text,
+  age text,
+  weight text,
+  height text,
+  gender text,
+  available_days ARRAY NOT NULL,
+  trainer_id uuid,
+  CONSTRAINT userDetails_pkey PRIMARY KEY (id),
+  CONSTRAINT userDetails_trainer_id_fkey FOREIGN KEY (trainer_id) REFERENCES public.profiles(user_id),
+  CONSTRAINT userDetails_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(user_id)
+);
