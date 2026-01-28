@@ -1,5 +1,6 @@
 import { Programs } from "@/components/DisplayProgram";
 import Loading from "@/components/Loading";
+import { Navigation } from "@/components/NavigationUser";
 import { Suspense } from "react";
 
 export default function ProgramPage(){
@@ -8,6 +9,7 @@ export default function ProgramPage(){
     });
     return(
         <Suspense fallback={<Loading/>}>
+            <Navigation/>
             <Programs day={String(today)}/>
         </Suspense>
         

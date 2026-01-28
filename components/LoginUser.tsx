@@ -26,7 +26,6 @@ export function LoginUser() {
     handleSubmit,
     formState: { errors, isSubmitting},
     reset,
-    
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues:{
@@ -73,57 +72,67 @@ export function LoginUser() {
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4">
-  <div className="w-full max-w-md">
-    <Card className="rounded-2xl border border-[#E2E8F0] shadow-xl">
-      <CardHeader className="pb-6 text-center">
-        <CardTitle className="text-2xl font-bold text-[#0F172A]">
-          Welcome Back
-        </CardTitle>
-        <p className="text-sm text-[#64748B]">
-          Sign in to your Serenity Hotel account
+  <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-linear-to-br from-[#F8FAFC] via-[#EEF2FF] to-[#FDF4FF]">
+
+  <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-indigo-200/40 blur-[120px]" />
+  <div className="absolute bottom-0 -right-40 h-96 w-96 rounded-full bg-pink-200/40 blur-[120px]" />
+
+  <div className="relative w-full max-w-md">
+    <Card className="rounded-3xl border border-border/40 bg-white/70 backdrop-blur-xl shadow-2xl">
+
+      <CardHeader className="pb-6 text-center space-y-2">
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+          Welcome back to{" "}
+          <span className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Trainify
+          </span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          AI-powered training. Built for real results.
         </p>
       </CardHeader>
 
       <CardContent>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-        >
-          <div className="grid gap-2">
-            <Label className="text-[#0F172A]">Email</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+
+          <div className="space-y-2">
+            <Label className="text-sm text-foreground/80">Email</Label>
             <Input
               {...register("email")}
-              placeholder="you@example.com"
+              placeholder="you@trainify.ai"
               className="
                 h-11
-                border-[#CBD5E1]
-                focus:border-[#1E3A8A]
-                focus:ring-[#1E3A8A]
+                rounded-xl
+                bg-white
+                border-border
+                focus:border-indigo-500
+                focus:ring-indigo-500
               "
             />
             {errors.email && (
-              <p className="text-xs text-red-600">
+              <p className="text-xs text-red-500">
                 {errors.email.message}
               </p>
             )}
           </div>
 
-          <div className="grid gap-2">
-            <Label className="text-[#0F172A]">Password</Label>
+          <div className="space-y-2">
+            <Label className="text-sm text-foreground/80">Password</Label>
             <Input
               type="password"
               {...register("password")}
               placeholder="••••••••"
               className="
                 h-11
-                border-[#CBD5E1]
-                focus:border-[#1E3A8A]
-                focus:ring-[#1E3A8A]
+                rounded-xl
+                bg-white
+                border-border
+                focus:border-indigo-500
+                focus:ring-indigo-500
               "
             />
             {errors.password && (
-              <p className="text-xs text-red-600">
+              <p className="text-xs text-red-500">
                 {errors.password.message}
               </p>
             )}
@@ -132,33 +141,36 @@ export function LoginUser() {
           <Button
             disabled={isSubmitting}
             className="
-              h-11 w-full
-              rounded-xl
-              bg-[#C9A227]
-              hover:bg-[#A8871E]
-              text-[#0F172A]
+              h-12 w-full
+              rounded-2xl
+              bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600
+              hover:brightness-110
+              text-white
               font-semibold
-              shadow-md
+              shadow-lg
+              transition-all
             "
           >
             <LogIn className="mr-2 h-4 w-4" />
-            {isSubmitting ? "Signing in..." : "Sign In"}
+            {isSubmitting ? "Signing in..." : "Sign in to Trainify"}
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-[#64748B]">
-          Do not have an account?{" "}
+        <div className="mt-6 text-center text-sm text-muted-foreground">
+          New to Trainify?{" "}
           <Link
             href="/register"
-            className="font-semibold text-[#1E3A8A] hover:underline"
+            className="font-semibold text-indigo-600 hover:text-indigo-500 transition"
           >
-            Create one
+            Create your AI program
           </Link>
         </div>
       </CardContent>
     </Card>
   </div>
 </div>
+
+
 
 );
 
